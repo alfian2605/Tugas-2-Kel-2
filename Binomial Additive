@@ -1,0 +1,53 @@
+#ALFIAN CANDRA IRAWAN (B2A020086)
+#SYIFA AULIA (B2A020051)
+#AURELIA SAMAS (B2A020049)
+#AMELIA (B2A020061)
+
+Additive_RNG <- function(a, z0, c, m, n) {
+  xi <- matrix(NA, n, 3)
+  colnames(xi) <- c("aZ(i-1)+c", "Xi", "Ui")
+  for (i in 1:n) {
+    xi[i, 1] <- (a * z0 + c)
+    xi[i, 2] <- xi[i, 1] %% m
+    xi[i, 3] <- xi[i, 2] / m
+    z0 <- xi[i, 2]
+  }
+  hist(xi[, 3])
+  return(xi)
+}
+
+Binom <- function(x, p) {
+  if (x < p) {
+    return(0)
+  } else {
+    return(1)
+  }
+}
+
+Gabungan_RNG_ber <- function(a, z0, c, m, n, p) {
+  xi <- matrix(NA, n, 3)
+  di <- matrix(NA, n, 3)
+  colnames(xi) <- c("aZ(i-1)+c", "Xi", "Ui")  
+  colnames(di) <- c("Ui", "0", "1")
+  for (i in 1:n) {
+    xi[i, 1] <- (a * z0 + c)
+    xi[i, 2] <- xi[i, 1] %% m
+    xi[i, 3] <- xi[i, 2] / m
+    z0 <- xi[i, 2]
+    di[i, 1] <- xi[i, 3]
+    di[i, 2:3] <- Binom(xi[i, 2], p)
+  }
+  hist(xi[, 3])
+  View(xi)
+  View(di)
+  return(di)
+}
+
+set.seed(123) # set seed agar hasil random dapat direproduksi
+xi <- Additive_RNG(19, 12357, 237, 128, 100)
+di <- Gabungan_RNG_ber(19, 12357, 237, 128, 100, 0.5)
+Binom <- as.numeric(di[, 3])
+tabel <- table(Binom) / length(Binom)
+View(di)
+View(tabel)
+runif(di[, 1]) # melakukan pemanggilan fungsi runif dengan menggunakan nilai dari kolom "Ui"
